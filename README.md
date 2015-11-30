@@ -1,4 +1,6 @@
-# node-es-logger v0.2.0
+# node-es-logger v0.3.0
+
+Forked from https://github.com/kt3k/node-es-logger to add custom `log` function and allow dynamic type override
 
 This module creates a [bunyan](https://github.com/trentm/node-bunyan) logger instance with an output stream bound to [elasticsearch](https://github.com/elasticsearch/elasticsearch) instance with [logstash](https://github.com/elasticsearch/logstash) compatible JSON format.
 
@@ -13,7 +15,7 @@ var logger = require('es-logger').create({
 
 });
 
-logger.info({value: 123}, 'message');
+logger.log(type, {object: value});
 ```
 
 This prints a JSON and also send it to elasticsearch instance at `localhost:9200`.

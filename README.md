@@ -1,4 +1,4 @@
-# node-es-logger v0.3.0
+# node-es-logger v0.3.1
 
 Forked from https://github.com/kt3k/node-es-logger to add custom `log` function and allow dynamic type override
 

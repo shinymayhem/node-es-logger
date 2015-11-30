@@ -1,7 +1,7 @@
-
+/* eslint-env node */
 
 var bunyan = require('bunyan');
-var ElasticsearchStream = require('bunyan-elasticsearch');
+var ElasticsearchStream = require('bunyan-elasticsearch-updated');
 
 
 /**
@@ -14,7 +14,7 @@ var ElasticsearchStream = require('bunyan-elasticsearch');
  * @param {String} opts.type
  * @param {Boolean} opts.quiet
  */
-module.exports.create = function (opts) {
+module.exports.create = function create(opts) {
     'use strict';
 
     opts = opts || {};
@@ -31,8 +31,10 @@ module.exports.create = function (opts) {
     var esStream = new ElasticsearchStream({
 
         indexPattern: opts.indexPattern || '[logstash-]YYYY.MM.DD',
-        type: opts.type || 'logs',
-        host: opts.host
+        host: opts.host,
+        type: opts.type || function(entry) {
+          return entry["_type"] || "logs";
+        }
 
     });
 
@@ -60,6 +62,23 @@ module.exports.create = function (opts) {
 
     });
 
+    logger.log = log;
+
     return logger;
 
+};
+
+var log = function log(type, data) {
+  if (arguments.length === 1 || data === undefined) {
+    data = type;
+    type = "string";
+  }
+  var logObject = {};
+  logObject["_type"] = type;
+  if (typeof data === "string") {
+    this.info(logObject, data);
+  } else {
+    logObject.data = data;
+    this.info(logObject, "object");
+  }
 };
